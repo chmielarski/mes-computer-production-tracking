@@ -20,8 +20,6 @@ def main():
             menu_main(user_current)
             user_update((user_current), "offline", None)  # Update user status to offline when user logs out
     
-    
-
 if __name__ == "__main__":
     main()
 

@@ -40,18 +40,14 @@ def user_edit(user_number):
     cursor.execute("SELECT user_number FROM users WHERE user_number = ?", (user_number,))
     row = cursor.fetchone()
 
+    # admin edit prevention
     if row and row[0] == 1:
         print("Cannot edit admin user.")
         input("Press Enter to continue...")
         conn.close()
         return
-    elif row == row[0]:
-        print("Cannot edit current user.")
-        input("Press Enter to continue...")
-        conn.close()
-        return
+    # optional: current user edit prevention.
 
-    
     # Check if username exists
     cursor.execute("SELECT * FROM users WHERE user_number = ?", (user_number,))
     user = cursor.fetchone()
@@ -97,13 +93,25 @@ def user_delete(user_number):
     # Check if user is admin at user_number 1, if so, prevent deletion of admin user
     cursor.execute("SELECT user_number FROM users WHERE user_number = ?", (user_number,))
     row = cursor.fetchone()
+    # invalid input prevention
+    if row is None:
+        print("User does not exist.")
+        input("Press Enter to continue...")
+        conn.close()
+        return
 
+    # admin and current user deletion prevention
     if row and row[0] == 1:
         print("Cannot delete admin user.")
         input("Press Enter to continue...")
         conn.close()
         return
-
+    
+    if row == row[0]:
+        print("Cannot delete current user.")
+        input("Press Enter to continue...")
+        conn.close()
+        return
 
     # Check if username exists
     cursor.execute("SELECT * FROM users WHERE user_number = ?", (user_number,))
@@ -116,6 +124,30 @@ def user_delete(user_number):
     # Delete user from the users database
     cursor.execute("DELETE FROM users WHERE user_number = ?", (user_number,))
     print(f"User '{user_number}' deleted successfully.")
+    input("Press Enter to continue...") # user input requirement
+    conn.commit()
+    conn.close()
+# function to toggle account status between enabled and disabled, with disabled users unable to log in 
+def user_toggle_account_status(user_number):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # Check if user exists
+    cursor.execute("SELECT account_status FROM users WHERE user_number = ?", (user_number,))
+    row = cursor.fetchone()
+    if row is None:
+        print("User does not exist.")
+        input("Press Enter to continue...") # user input requirement
+        conn.close()
+        return
+
+    current_status = row[0]
+    new_status = "disabled" if current_status == "enabled" else "enabled"
+
+    cursor.execute("""
+        UPDATE users SET account_status = ? WHERE user_number = ?
+        """, (new_status, user_number))
+    print(f"User '{user_number}' account status updated to '{new_status}'.")
     input("Press Enter to continue...") # user input requirement
     conn.commit()
     conn.close()

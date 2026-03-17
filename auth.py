@@ -26,8 +26,7 @@ def login():
             ) = user
 
         # Verify credentials
-        if username_db == username and password_db == password:
-            
+        if username_db == username and password_db == password and account_status_db == "enabled":
             user_data_return = username_db, role_db, user_number_db, employee_id_db  # Return username, role, user_number, employee_id
             return user_data_return
         else:   # if credentials are incorrect, prompt user to try again, while loops

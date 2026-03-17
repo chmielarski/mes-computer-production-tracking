@@ -1,4 +1,4 @@
-from database.user_db import user_identify, user_status_update
+from database.user_db import user_identify, user_update
 
 # Authentication module for MES Computer Production Tracking System
 def login():
@@ -27,7 +27,7 @@ def login():
 
         # Verify credentials
         if username_db == username and password_db == password:
-            user_status_update(user_number_db, "idle")  # Update user status to idle
+            
             user_data_return = username_db, role_db, user_number_db, employee_id_db  # Return username, role, user_number, employee_id
             return user_data_return
         else:   # if credentials are incorrect, prompt user to try again, while loops

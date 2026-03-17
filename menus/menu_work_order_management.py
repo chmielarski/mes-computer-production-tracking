@@ -1,12 +1,18 @@
 from database.work_order_db import create_work_order, edit_work_order, delete_work_order, view_all_work_orders
-from database.user_db import user_status_update
+from database.user_db import user_update
 from menus.menu_utils import menu_header
 
 # work order management menu, with options to create WO, edit WO, delete WO, only available to users with role "admin"
 def menu_work_order_management(user_current):
     
     while True:
+        #update user table with user status and workstation
+        user_update(user_current, "idle", None)  # Update user status to active and workstation to work order menu
+        
+        # remove previous text and display menu header function
         menu_header("WORK ORDER MANAGEMENT", user_current)
+        
+        #display options
         print("1. Create Work Order")
         print("2. Edit Work Order")
         print("3. Delete Work Order")

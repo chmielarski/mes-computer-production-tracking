@@ -1,11 +1,12 @@
 from menus.menu_utils import menu_header
-from database.user_db import user_create, user_delete, user_edit, user_status_update, users_table
+from database.user_db import user_create, user_delete, user_edit, users_table
 
 # choice 2 from main menu, only available to admin users, to manage users in the system, with options to create, edit, and delete users
 def menu_user_manager(user_current):
     
     # user menu options within while loop
     while True:
+        
         # Display menu header 
         menu_header("MANAGE USERS", user_current)
         print("1. Create User")

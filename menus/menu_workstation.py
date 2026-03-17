@@ -1,5 +1,5 @@
 from menus.menu_utils import menu_header
-from database.user_db import user_status_update
+from database.user_db import user_update
 
 
 # work station menu within while loop, inputs for work_order, station_name, and user
@@ -7,6 +7,9 @@ def menu_workstation(work_order, workstation_name, user_current):
     # user variable name definitions for menu header display
     username, role, user_number, employee_id = user_current
     
+    # update user status to active and workstation to current workstation
+    user_update(user_current, "active", workstation_name)  # Update user status to active and workstation to current workstation
+   
     while True:
         # Display menu header 
         menu_header(f"{workstation_name.upper()}: {work_order}", user_current)

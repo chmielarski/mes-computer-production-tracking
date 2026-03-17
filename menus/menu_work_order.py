@@ -1,5 +1,5 @@
 from menus.menu_utils import menu_header
-from database.user_db import user_status_update
+from database.user_db import user_update
 from database.work_order_db import create_work_order, delete_work_order, edit_work_order, format_work_order_id, view_all_work_orders  
 from menus.menu_work_order_management import menu_work_order_management
 from menus.menu_workstation import menu_workstation
@@ -8,10 +8,15 @@ from menus.menu_workstation import menu_workstation
 def menu_work_order(user_current):
     # workstations
     #assembly, software_installation, final_test =
+
+    
     menu_header("WORK ORDER", user_current)
     work_order = input("Work Order: ")
     # user menu options within while loop
     while True:
+        # Update user status to active and workstation to work order menu
+        user_update(user_current, "idle", None)  # Update user status to active and workstation to work order menu
+    
         # Display menu header 
         menu_header(f"WORK ORDER: {work_order}", user_current)
         print("1. Sign into Assembly")
@@ -25,7 +30,6 @@ def menu_work_order(user_current):
         if choice == "1":
             print("Signing into Assembly...")
             menu_workstation(work_order, "assembly", user_current)
-            user_status_update(user_current[2], "idle")  # Update user status to idle after signing out of workstation
 
         elif choice == "2":
             print("Signing into Software Installation...")

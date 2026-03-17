@@ -1,4 +1,4 @@
-from database.user_db import user_create, user_delete, user_edit, user_status_update, users_table
+from database.user_db import user_create, user_delete, user_edit, user_update, users_table
 from database.work_order_db import create_work_order
 from menus.menu_user_management import menu_user_manager
 from menus.menu_work_order import menu_work_order, menu_work_order_management
@@ -11,8 +11,9 @@ def menu_main(user_current):
     
     # user menu options within while loop
     while True:
-        # Display menu header 
-        menu_header("MAIN MENU", user_current)
+
+        user_update((user_current), "idle", None)  # Update user status to idle
+        menu_header("MAIN MENU", user_current) # Display menu header 
 
         # user menu options here, while loop to keep user in menu until they choose to log out, which breaks the loop and returns to login screen
         print("1. Enter Work Order")
@@ -44,7 +45,7 @@ def menu_main(user_current):
 
         elif choice == "0":
             print("Logging out...")
-            user_status_update(user_number, "offline")  # Update user status to offline using user_number
+            user_update((user_current), "offline")  # Update user status to offline using user_number
             break  # Exit the menu loop to return to login screen
 
         else:

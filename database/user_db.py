@@ -135,16 +135,56 @@ def user_identify(username, password):
     return None
 
 # User status update function
-def user_status_update(user_number, user_status):
+def user_update(user_current, user_status, workstation_name=None):
+    username, role, user_number, employee_id = user_current
     conn = get_connection()
     cursor = conn.cursor()
+
 
     # change user status to status_id based on status_name input
     cursor.execute("""
         UPDATE users SET user_status = ? WHERE user_number = ?
         """, (user_status, user_number))
     conn.commit()
+
+    # change user workstation to workstation_name input
+    if workstation_name is not None:
+        cursor.execute("""
+            UPDATE users SET user_workstation = ? WHERE user_number = ?
+            """, (workstation_name, user_number))
+        conn.commit()
+
+    else: # if workstation_name is None, set user workstation to None
+        cursor.execute("""
+            UPDATE users SET user_workstation = NULL WHERE user_number = ?
+            """, (user_number,))
+        conn.commit()
+
     conn.close()
+
+def user_status_fetch(user_number):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT user_status FROM users WHERE user_number = ?
+        """, (user_number,))
+    user_status = cursor.fetchone()
+    conn.close()
+    if user_status is not None:
+        return user_status[0]
+    return None
+
+def user_workstation_fetch(user_number):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT user_workstation FROM users WHERE user_number = ? 
+        """, (user_number,))
+    user_workstation = cursor.fetchone()
+    conn.close()
+    if user_workstation is not None:
+        return user_workstation[0]
+    return None
 
 # users table fetch function
 def users_table():

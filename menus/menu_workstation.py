@@ -1,0 +1,46 @@
+from menus.menu_utils import menu_header
+from database.user_db import user_status_update
+
+
+# work station menu within while loop, inputs for work_order, station_name, and user
+def menu_workstation(work_order, workstation_name, user_current):
+    # user variable name definitions for menu header display
+    username, role, user_number, employee_id = user_current
+    
+    while True:
+        # Display menu header 
+        menu_header(f"{workstation_name.upper()}: {work_order}", user_current)
+        print("1. View Checklist")
+        print("2. View BOM")
+        print("3. Add Production Notes")
+        print("4. Complete Checklist")
+        print("5. Handoff to Next Station")
+        print("0. Return to Work Order Menu")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            print("Viewing checklist...")
+            # code to view checklist here
+
+        elif choice == "2":
+            print("Viewing BOM...")
+            # code to view BOM here
+
+        elif choice == "3":
+            print("Adding production notes...")
+            # code to add production notes here
+
+        elif choice == "4":
+            print("Completing checklist...")
+            # code to complete checklist here
+
+        elif choice == "5":
+            print("Handing off to next station...")
+            # code to hand off to next station here
+
+        elif choice == "0":
+            break  # Exit the workstation menu loop to return to previous menu
+
+        else:
+            print("Invalid choice. Please try again.")

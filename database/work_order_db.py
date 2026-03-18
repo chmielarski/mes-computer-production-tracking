@@ -1,4 +1,3 @@
-import sqlite3
 from datetime import datetime
 from database.db import get_connection
 
@@ -13,7 +12,7 @@ def create_work_order(user_current):
     quantity = int(input("Enter quantity: "))
     created_by = user_current[1] # Get username from user_current tuple
     date_created = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    status = "not started"
+    status = 1
 
     cursor.execute("""
         INSERT INTO work_orders (product_name, quantity, created_by, date_created, status) VALUES (?, ?, ?, ?, ?)
@@ -92,6 +91,27 @@ def view_all_work_orders():
     work_orders = cursor.fetchall()
     conn.close()
     return work_orders
+
+# get work order
+def get_work_order(order_number):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT *
+        FROM work_orders
+        WHERE order_number = ?
+    """, (order_number,))
+
+    work_order = cursor.fetchone()
+
+    if work_order is None:
+        print("Work order does not exist.")
+        input("Press Enter to continue...") # user input requirement
+        conn.close()
+        return
+    
+    return work_order
 
 def get_all_workstations():
 

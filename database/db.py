@@ -1,5 +1,4 @@
 import sqlite3
-import datetime
 
 ### Database functions
 DB_NAME = "mes_database.db"
@@ -49,29 +48,51 @@ def initialize_database():
         )
     """) 
     conn.commit()
+    
+    # check if work_orders table is empty
+    cursor.execute("SELECT * FROM work_orders")
+    if cursor.fetchone() is None:
 
+        default_work_orders = [
+            ("WO-0001", "Test Product", 10, "system", "2026-01-01", 1)
+        ]
+
+        cursor.executemany("""
+            INSERT INTO work_orders (
+                order_number,
+                product_name,
+                quantity,
+                created_by,
+                date_created,
+                status
+            )
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, default_work_orders)
+
+        conn.commit()
+        
     # Create work_orders_statuses table, with options for not started, in progress, and completed
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS work_orders_statuses (
+        CREATE TABLE IF NOT EXISTS work_order_statuses (
         status_id INTEGER PRIMARY KEY AUTOINCREMENT,
         status_name TEXT NOT NULL UNIQUE
         )
     """)
 
     # insert work_orders_statuses if not exists
-    cursor.execute("SELECT * FROM work_orders_statuses")
+    cursor.execute("SELECT * FROM work_order_statuses")
     if cursor.fetchone() is None:
-        work_orders_statuses = [
-            ("Not Started",),
-            ("In Progress",),
-            ("Completed",)
+        work_order_statuses = [
+            ("not started",),
+            ("in progress",),
+            ("complete",)
         ]
         cursor.executemany("""
-            INSERT INTO work_orders_statuses (status_name) VALUES (?)
-        """, work_orders_statuses)
+            INSERT INTO work_order_statuses (status_name) VALUES (?)
+        """, work_order_statuses)
         conn.commit()
 
-
+    
     # workstations table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS workstations (
@@ -86,9 +107,9 @@ def initialize_database():
     cursor.execute("SELECT * FROM workstations")
     if cursor.fetchone() is None:
         workstations = [
-            ("Assembly", 1), 
-            ("Software Installation", 2), 
-            ("Final Test", 3)
+            ("assembly", 1), 
+            ("software installation", 2), 
+            ("final test", 3)
         ]
         cursor.executemany("""
             INSERT INTO workstations (workstation_name, sequence_order) VALUES (?, ?)
@@ -107,9 +128,9 @@ def initialize_database():
     cursor.execute("SELECT * FROM user_statuses")
     if cursor.fetchone() is None:
         user_statuses = [
-            ("Offline",), 
-            ("Idle",), 
-            ("Active",)
+            ("offline",), 
+            ("idle",), 
+            ("active",)
         ]
         cursor.executemany("""
             INSERT INTO user_statuses (status_name) VALUES (?)
@@ -138,18 +159,17 @@ def initialize_database():
     
     # workstation sessions table, to track user sign in and sign out times at each workstation, with foreign keys to users and work orders
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS workstation_sessions (
+    CREATE TABLE IF NOT EXISTS workstation_sessions (
         session_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        work_order_number INTEGER NOT NULL,
+        work_order_id INTEGER NOT NULL,
         user_number INTEGER NOT NULL,
         workstation_id INTEGER NOT NULL,
         start_time TEXT NOT NULL,
         end_time TEXT,
-        labour_hours REAL,
-        status INTEGER
-       )
+        labour_minutes INTEGER,
+        status TEXT NOT NULL
+        )
     """)
-
     conn.commit()
 
     conn.close()

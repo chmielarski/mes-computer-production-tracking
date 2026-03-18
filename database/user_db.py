@@ -1,4 +1,3 @@
-import sqlite3
 from database.db import get_connection
 
 ### User management functions: create, edit, delete, identify, and status update
@@ -201,9 +200,15 @@ def user_status_fetch(user_number):
         SELECT user_status FROM users WHERE user_number = ?
         """, (user_number,))
     user_status = cursor.fetchone()
+
+    cursor.execute("""
+        SELECT status_name FROM user_statuses WHERE status_id = ?           
+        """, (user_status))
+    status_name = cursor.fetchone()
     conn.close()
-    if user_status is not None:
-        return user_status[0]
+
+    if status_name is not None:
+        return status_name[0]
     return None
 
 def user_workstation_fetch(user_number):

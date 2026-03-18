@@ -1,13 +1,16 @@
 from database.work_order_db import create_work_order, edit_work_order, delete_work_order, view_all_work_orders
 from database.user_db import user_update
 from menus.menu_utils import menu_header
+from database.user_statuses_db import get_user_status_map
+from database.work_order_statuses_db import get_work_order_status_name_map
 
+# user status update required at this step
 # work order management menu, with options to create WO, edit WO, delete WO, only available to users with role "admin"
 def menu_work_order_management(user_current):
-    
+    statuses = get_user_status_map()
     while True:
         #update user table with user status and workstation
-        user_update(user_current, "idle", None)  # Update user status to active and workstation to work order menu
+        user_update(user_current, statuses["idle"], None)  # Update user status to active and workstation to work order menu
         
         # remove previous text and display menu header function
         menu_header("WORK ORDER MANAGEMENT", user_current)
@@ -43,10 +46,16 @@ def menu_work_order_management(user_current):
 
         elif choice == "4":
             menu_header("WORK ORDER LIST", user_current)
+            
             work_orders = view_all_work_orders()
+            
+            work_order_statuses = get_work_order_status_name_map()
+            #work_order_status = work_order_statuses["status_name"]
+
             print(f"{'ID':<5} | {'ORDER #':<10} | {'PRODUCT NAME':<20} | {'QUANTITY':<10} | {'CREATED BY':<15} | {'DATE CREATED':<20} | {'STATUS':<15}")
             for wo in work_orders:
-                print(f"{wo[0]:<5} | {wo[1]:<10} | {wo[2]:<20} | {wo[3]:<10} | {wo[4]:<15} | {wo[5]:<20} | {wo[6]:<15}")
+                work_order_status = work_order_statuses[wo[6]] 
+                print(f"{wo[0]:<5} | {wo[1]:<10} | {wo[2]:<20} | {wo[3]:<10} | {wo[4]:<15} | {wo[5]:<20} | {work_order_status:<15}")
             input("Press Enter to continue...") # user input requirement
 
         elif choice == "0":

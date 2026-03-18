@@ -1,18 +1,20 @@
 from database.user_db import user_create, user_delete, user_edit, user_update, users_table
 from database.work_order_db import create_work_order
 from menus.menu_user_management import menu_user_manager
-from menus.menu_work_order import menu_work_order, menu_work_order_management
+from menus.menu_work_order import menu_work_order
+from menus.menu_work_order_management import menu_work_order_management
 from menus.menu_utils import menu_header
+from database.user_statuses_db import get_user_status_map
         
 # main menu function, with user as input to sign on and edit sqlite users
 def menu_main(user_current):
     # user variable name definitions for menu header display
     username, role, user_number, employee_id = user_current
-    
+    statuses = get_user_status_map()
     # user menu options within while loop
     while True:
 
-        user_update((user_current), "idle", None)  # Update user status to idle
+        user_update((user_current), statuses["idle"], None)  # Update user status to idle
         menu_header("MAIN MENU", user_current) # Display menu header 
 
         # user menu options here, while loop to keep user in menu until they choose to log out, which breaks the loop and returns to login screen

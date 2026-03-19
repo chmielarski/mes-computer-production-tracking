@@ -13,9 +13,10 @@ def menu_workstation(work_order, workstation_id, user_current):
     # update user status to active and workstation to current workstation
     user_update(user_current, statuses["active"], workstation_name)  # Update user status to active and workstation to current workstation
     
+
     while True:
         # Display menu header 
-        menu_header(f"{workstation_name.upper()}: {work_order}", user_current)
+        menu_header(f"{workstation_name.upper()}: {work_order[1]}", user_current)
         print("1. View Checklist")
         print("2. View BOM")
         print("3. Add Production Notes")
@@ -46,6 +47,7 @@ def menu_workstation(work_order, workstation_id, user_current):
             # code to hand off to next station here
 
         elif choice == "0":
+            
             break  # Exit the workstation menu loop to return to previous menu
 
         else:

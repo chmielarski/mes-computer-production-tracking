@@ -1,4 +1,3 @@
-import sqlite3
 from database.db import initialize_database
 from auth import login
 from database.user_db import user_update

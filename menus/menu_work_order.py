@@ -16,10 +16,12 @@ def menu_work_order(user_current):
     menu_header("WORK ORDER", user_current)
     
     work_order = get_work_order_table()
-
+    if work_order is None:
+        print("Work order not found. Returning to main menu.")
+        input("Press Enter to continue...") # user input requirement
+        return
     # user menu options within while loop
     while True:
-        
         
         # Update user status to active and workstation to work order menu
         user_update(user_current, statuses["idle"], None)  # Update user status to active and workstation to work order menu
@@ -63,14 +65,13 @@ def get_work_order_table():
         # work order input detection
         order_number_input = input("Work Order: WO-")
         if len(order_number_input) < 4:
-            print("Work order must contain 4 numbers.")
-            continue
+            return None
 
         order_number = f"WO-{order_number_input.zfill(4)}"
         work_order = get_work_order(order_number)
         
         if work_order is None:
-            continue
+            return
         else:   # Unpack critical information
             (
             id,
@@ -82,3 +83,5 @@ def get_work_order_table():
             status
             ) = work_order
             return work_order
+    
+        

@@ -38,8 +38,8 @@ def initialize_database():
     # Create work_orders table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS work_orders (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        order_number TEXT UNIQUE,
+        work_order_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        work_order_number TEXT UNIQUE,
         product_name TEXT NOT NULL,
         quantity INTEGER NOT NULL,
         created_by TEXT NOT NULL,
@@ -54,12 +54,12 @@ def initialize_database():
     if cursor.fetchone() is None:
 
         default_work_orders = [
-            ("WO-0001", "Test Product", 10, "system", "2026-01-01", 1)
+            ("WO-0001", "Test Product", 10, "system", "2026-01-01 00:00:00", 1)
         ]
 
         cursor.executemany("""
             INSERT INTO work_orders (
-                order_number,
+                work_order_number,
                 product_name,
                 quantity,
                 created_by,
@@ -167,12 +167,34 @@ def initialize_database():
         start_time TEXT NOT NULL,
         end_time TEXT,
         labour_minutes INTEGER,
-        status TEXT NOT NULL
+        is_handoff INTEGER DEFAULT 0
         )
     """)
     conn.commit()
 
+    # create test workstation session if workstation_sessions table is empty
+    cursor.execute("SELECT * FROM workstation_sessions")
+    if cursor.fetchone() is None:
+        cursor.execute("""
+        INSERT INTO workstation_sessions (work_order_id, user_number, workstation_id, start_time, end_time, labour_minutes, is_handoff)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (1, 400000000, 1, "2026-03-18 08:00:00", "2026-03-18 10:00:00", 120, 0))
+        conn.commit()
+    
+
+    # create checklist table
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS checklists (
+        checklist_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        job_type_id, INTEGER NOT NULL,
+        workstation_id INTEGER NOT NULL,
+        is_completed INTEGER DEFAULT 0
+    )
+    """)
+    conn.commit()
+    
     conn.close()
+    
 
 
 

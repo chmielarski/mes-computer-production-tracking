@@ -1,7 +1,9 @@
+from datetime import datetime
 from menus.menu_utils import menu_header
-from database.user_db import user_update, user_workstation_fetch
+from database.user_db import user_update
 from database.user_statuses_db import get_user_status_map
 from database.workstations_db import get_workstation_name_by_id
+from database.workstation_sessions_db import create_workstation_session, end_workstation_session
 
 # work station menu within while loop, inputs for work_order, station_name, and user
 def menu_workstation(work_order, workstation_id, user_current):
@@ -13,6 +15,8 @@ def menu_workstation(work_order, workstation_id, user_current):
     # update user status to active and workstation to current workstation
     user_update(user_current, statuses["active"], workstation_name)  # Update user status to active and workstation to current workstation
     
+    #create current workstation_session for user
+    create_workstation_session(work_order, workstation_id, user_current)
 
     while True:
         # Display menu header 
@@ -47,7 +51,7 @@ def menu_workstation(work_order, workstation_id, user_current):
             # code to hand off to next station here
 
         elif choice == "0":
-            
+            end_workstation_session(work_order, workstation_id, user_current)
             break  # Exit the workstation menu loop to return to previous menu
 
         else:

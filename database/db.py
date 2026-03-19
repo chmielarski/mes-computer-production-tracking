@@ -172,21 +172,23 @@ def initialize_database():
     """)
     conn.commit()
 
-    # create test workstation session if workstation_sessions table is empty
-    cursor.execute("SELECT * FROM workstation_sessions")
-    if cursor.fetchone() is None:
-        cursor.execute("""
-        INSERT INTO workstation_sessions (work_order_id, user_number, workstation_id, start_time, end_time, labour_minutes, is_handoff)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (1, 400000000, 1, "2026-03-18 08:00:00", "2026-03-18 10:00:00", 120, 0))
-        conn.commit()
-    
+    if False: #inline text...
+        # create test workstation session if workstation_sessions table is empty
+        cursor.execute("SELECT * FROM workstation_sessions")
+        if cursor.fetchone() is None:
+            cursor.execute("""
+            INSERT INTO workstation_sessions (work_order_id, user_number, workstation_id, start_time, end_time, labour_minutes, is_handoff)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (1, 400000000, 1, "2026-03-18 08:00:00", "2026-03-18 10:00:00", 120, 0))
+            conn.commit()
+        
 
     # create checklist table
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS checklists (
+    CREATE TABLE IF NOT EXISTS work_order_checklists (
         checklist_id INTEGER PRIMARY KEY AUTOINCREMENT,
-        job_type_id, INTEGER NOT NULL,
+        job_type_id INTEGER NOT NULL,
+        work_order_id INTEGER NOT NULL,
         workstation_id INTEGER NOT NULL,
         is_completed INTEGER DEFAULT 0
     )

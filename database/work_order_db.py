@@ -1,5 +1,6 @@
-import datetime
+from datetime import datetime
 from database.db import get_connection
+from database.work_order_checklists_db import create_work_order_checklist, delete_work_order_checklist
 
 ### Work order management functions: create, edit, delete, and identify
 # work order creation function, with inputs for product name, quantity, and created by, with auto-incrementing order number and date created
@@ -31,7 +32,7 @@ def create_work_order(user_current):
         return
 
     created_by = user_current[1]
-    date_created = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    date_created = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     status = 1
 
     cursor.execute("""
@@ -40,15 +41,18 @@ def create_work_order(user_current):
     """, (product_name, quantity, created_by, date_created, status))
     conn.commit()
 
-    wo_id = cursor.lastrowid
-    order_number = f"WO-{wo_id:04d}"
+    work_order_id = cursor.lastrowid
+    order_number = f"WO-{work_order_id:04d}"
 
     cursor.execute("""
         UPDATE work_orders
         SET work_order_number = ?
         WHERE work_order_id = ?
-    """, (order_number, wo_id))
+    """, (order_number, work_order_id))
     conn.commit()
+
+    # create checklist for new work order
+    create_work_order_checklist(work_order_id)
 
     print(f"Work order {order_number} for {quantity} {product_name}(s) created successfully.")
     input("Press Enter to continue...")
@@ -100,6 +104,10 @@ def delete_work_order(work_order_id):
 
     cursor.execute("DELETE FROM work_orders WHERE work_order_number = ?", (work_order_number,))
     conn.commit()
+
+    #remove associated checklist if work order is deleted
+    delete_work_order_checklist(work_order_id)
+
     print(f"Work order {work_order_number} deleted successfully.")
     input("Press Enter to continue...") # user input requirement
     conn.close()

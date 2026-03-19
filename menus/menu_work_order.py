@@ -17,8 +17,7 @@ def menu_work_order(user_current):
     
     work_order = get_work_order_table()
     if work_order is None:
-        print("Work order not found. Returning to main menu.")
-        input("Press Enter to continue...") # user input requirement
+        
         return
     # user menu options within while loop
     while True:
@@ -36,19 +35,16 @@ def menu_work_order(user_current):
 
         choice = input("Enter your choice: ")
 
-        if choice == "1":
-            print("Signing into Assembly...")
+        if choice == "1": ## sign into assembly workstation
             menu_workstation(work_order, workstations["assembly"], user_current)
 
-        elif choice == "2":
-            print("Signing into Software Installation...")
+        elif choice == "2": ## sign into software installation workstation
             menu_workstation(work_order, workstations["software installation"], user_current)
-
-        elif choice == "3":
-            print("Signing into Final Test...")
+        
+        elif choice == "3": ## sign into final test workstation
             menu_workstation(work_order, workstations["final test"], user_current)
 
-        elif choice == "4":
+        elif choice == "4": ## view work order information
             print("Viewing work order information...")
             
 

@@ -26,8 +26,9 @@ def menu_work_order_management(user_current):
 
         if choice == "1":
             
-            menu_header("WORK ORDER LIST", user_current)
+            menu_header("WORK ORDER CREATION", user_current)
             create_work_order(user_current)
+            
             #input("Press Enter to continue...") # user input requirement
 
         elif choice == "2":

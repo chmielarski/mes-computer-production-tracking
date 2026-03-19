@@ -4,7 +4,9 @@ from menus.menu_user_management import menu_user_manager
 from menus.menu_work_order import menu_work_order
 from menus.menu_work_order_management import menu_work_order_management
 from menus.menu_utils import menu_header
+from menus.menu_work_order_report import menu_work_order_report
 from database.user_statuses_db import get_user_status_map
+
         
 # main menu function, with user as input to sign on and edit sqlite users
 def menu_main(user_current):
@@ -32,20 +34,19 @@ def menu_main(user_current):
         choice = input("Enter your choice: ")
     
         # handle user choice for menu navigation
-        if choice == "1":
+        if choice == "1": # sign into work order menu, with options to sign into workstations, view production data, and update work order status, only available to users with role "user"
             menu_work_order(user_current)
 
-        elif choice == "2" and role == "admin":
+        elif choice == "2" and role == "admin": # sign into user management menu, with options to create, edit, and delete users, only available to users with role "admin"
             menu_user_manager(user_current)
         
-        elif choice == "3" and role == "admin":
-            print("Viewing reports...")
-            # code to view reports here
-        elif choice == "4" and role == "admin":
-            print("Managing work orders...")
+        elif choice == "3" and role == "admin": # view reports menu, with options to view work order reports and workstation session reports, only available to users with role "admin"
+            menu_work_order_report(user_current)
+
+        elif choice == "4" and role == "admin": # sign into work order management menu, with options to create, edit, and delete work orders, only available to users with role "admin"
             menu_work_order_management(user_current)
 
-        elif choice == "0":
+        elif choice == "0": # log out and return to login screen
             print("Logging out...")
             user_update((user_current), "offline")  # Update user status to offline using user_number
             break  # Exit the menu loop to return to login screen
